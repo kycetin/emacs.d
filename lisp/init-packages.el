@@ -43,7 +43,8 @@
   :ensure t
   :config
   (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
+        doom-themes-enable-italic t
+        doom-modeline-vcs-max-length 24)
   (eval-after-load "org"
     (doom-themes-org-config))
   (if (daemonp)
