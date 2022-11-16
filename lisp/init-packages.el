@@ -387,7 +387,7 @@
         org-confirm-babel-evaluate nil
         org-return-follows-link t
         org-startup-truncated nil
-        org-directory "~/goktug/org/"
+        org-directory "~/cetinkaya/org/"
         org-agenda-hide-tags-regexp "."
         org-log-done 'time
         org-use-fast-todo-selection t
@@ -635,6 +635,10 @@ See also `org-save-all-org-buffers'"
   :defer t
   :ensure t)
 
+(use-package org-roam
+  :defer t
+  :ensure t)
+
 (use-package treemacs-evil
   :after (treemacs evil)
   :ensure t)
@@ -701,3 +705,45 @@ See also `org-save-all-org-buffers'"
      (mapcar 'symbol-name zone-programs))))
   (let ((zone-programs (list (intern pgm))))
     (zone)))
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+(defun gaj/ts-mode-hook ()
+  "Set up preferences for typescript mode."
+  (tide-setup)
+
+  (local-set-key (kbd "M-j") 'c-indent-new-comment-line)
+  (local-set-key (kbd "M-RET") 'c-indent-new-comment-line)
+
+  (flycheck-mode +1)
+
+  (eldoc-mode +1)
+
+  (tide-hl-identifier-mode +1)
+  (highlight-symbol-mode -1)
+
+  (company-mode +1)
+
+  (setq typescript-indent-level              2
+        typescript-expr-indent-offset        2
+        company-tooltip-align-annotations    t
+
+        flycheck-check-syntax-automatically  '(save idle-change mode-enabled)
+        flycheck-auto-change-delay           1.5
+
+        whitespace-line-column               120   ;; max line length
+        whitespace-style                     '(face lines-tail trailing))
+  (whitespace-mode))
+
+(use-package typescript-mode :ensure t :pin melpa
+  :mode (("\\.ts\\'" . typescript-mode))
+  :hook
+  (typescript-mode . gaj/ts-mode-hook))
+
+(use-package tide :ensure t :pin melpa
+  :delight
+  :commands (tide-setup))
+(use-package exec-path-from-shell :ensure t
+        :demand
+        :config
+        (exec-path-from-shell-initialize))
